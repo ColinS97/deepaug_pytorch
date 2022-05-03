@@ -91,6 +91,7 @@ def deepaugment_image_generator(X, y, policy, batch_size=64, augment_chance=0.5,
         policy (pd.DF): Dataframe of policies
 
     Returns:
+        tuple: (X_batch, y_batch) X_batch is a numpy array of images as type uint8 from 0 to 255 and y_batch is a batch of labels
     """
     if(show_policy):
         print("Policies are:")
@@ -112,6 +113,7 @@ def deepaugment_image_generator(X, y, policy, batch_size=64, augment_chance=0.5,
             for j in range(1, len(_X) // tiny_batch_size):
                 tiny_X = _X[j * tiny_batch_size: (j + 1) * tiny_batch_size]
                 tiny_y = _y[j * tiny_batch_size: (j + 1) * tiny_batch_size]
+                # if the random number is smaller than the augment_chance, augment the tiny batch of images
                 if np.random.rand() <= augment_chance:
                     # select a random policy from usually the top 20 policies
                     aug_chain = np.random.choice(policy)
@@ -132,7 +134,7 @@ def deepaugment_image_generator(X, y, policy, batch_size=64, augment_chance=0.5,
                 else:
                     aug_X = np.concatenate([aug_X, tiny_X])
                     aug_y = np.concatenate([aug_y, tiny_y])
-            yield aug_X, aug_y
+            yield aug_X.astype(np.uint8), aug_y
 
 
 X = np.random.rand(200, 32, 32, 3)

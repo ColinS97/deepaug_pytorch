@@ -124,24 +124,14 @@ def augment_by_policy(
         X, y, *hyperparams
 ):
     """
+    Augment data by applying a set of 5 policies.
+    input:
+        X: numpy array of images as integers from 0 to 255
+        y: numpy array of labels
+        hyperparams: list of tuples of (hyperparameter, value)
     """
-    portion = 1
-
-    assert (
-            portion >= 0.0 and portion <= 1.0
-    ), "portion argument value is out of accepted interval"
-
-    # convert data to 255 from normalized
-    _X = denormalize(X)
-
-    X_portion = _X
+    X_portion = X
     y_portion = y
-
-    if X_portion.shape[0] == 0:
-        print("X_portion has zero size !!!")
-        nix = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-        X_portion = _X[nix].copy()
-        y_portion = y[nix].copy()
 
     all_X_portion_aug = None
     all_y_portion = None
@@ -171,7 +161,7 @@ def augment_by_policy(
             all_y_portion = np.concatenate([all_y_portion, y_portion])
 
     augmented_data = {
-        "X_train": all_X_portion_aug / 255.0,
+        "X_train": all_X_portion_aug,
         "y_train": all_y_portion,
     }  # back to normalization
 
